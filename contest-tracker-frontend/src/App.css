@@ -1,0 +1,110 @@
+body {
+  margin: 0;
+  font-family: "Segoe UI", sans-serif;
+  background-color: #f4f6f8;
+}
+
+.app-container {
+  max-width: 900px;
+  margin: auto;
+  padding: 20px;
+}
+
+.app-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+
+.app-header h1 {
+  font-size: 32px;
+  margin: 0;
+}
+
+.app-header p {
+  margin-top: 6px;
+  color: #555;
+}
+
+.section-title {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+
+/* Filters */
+.filter-buttons {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.filter-buttons button {
+  margin: 0 8px;
+  padding: 8px 14px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  background-color: #e0e0e0;
+}
+
+.filter-buttons button.active {
+  background-color: #1976d2;
+  color: white;
+}
+
+/* Contest Cards */
+.contest-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  width: 100%;
+}
+
+@media (max-width: 900px) {
+  .contest-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .contest-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+.contest-card {
+  background: white;
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+.contest-card h3 {
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+
+.badge {
+  display: inline-block;
+  background-color: #eee;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+
+.contest-card a {
+  text-decoration: none;
+  color: #1976d2;
+  font-weight: 500;
+}
+
+.app-wrapper {
+  max-width: 1200px;   /* controls page width */
+  margin: 0 auto;      /* centers horizontally */
+  padding: 20px;
+}
