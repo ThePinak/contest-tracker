@@ -1,0 +1,26 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Platform {
+  CODEFORCES
+  LEETCODE
+  CODECHEF
+}
+
+model Contest {
+  id           String   @id @default(cuid())
+  platform     Platform
+  name         String
+  url          String
+  startTime    DateTime
+  durationSecs Int
+  fetchedAt    DateTime @default(now())
+
+  @@index([startTime])
+  @@index([platform])
+}
