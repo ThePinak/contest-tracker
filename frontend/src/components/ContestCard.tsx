@@ -2,6 +2,7 @@ import { format, formatDuration, intervalToDuration } from 'date-fns';
 import { ExternalLink, Clock, Calendar } from 'lucide-react';
 import type { Contest } from '../types';
 import { cn } from '../lib/utils';
+import { AddToCalendarMenu } from './AddToCalendarMenu';
 
 interface ContestCardProps {
   contest: Contest;
@@ -55,15 +56,18 @@ export const ContestCard: React.FC<ContestCardProps> = ({ contest }) => {
         )}>
           {config.label}
         </span>
-        <a 
-          href={contest.url} 
-          target="_blank" 
-          rel="noopener noreferrer"
-          className="text-textMuted hover:text-text transition-colors p-1"
-          title="Register / View Contest"
-        >
-          <ExternalLink className="w-5 h-5" />
-        </a>
+        <div className="flex items-center gap-1.5">
+          <AddToCalendarMenu contest={contest} variant="compact" />
+          <a 
+            href={contest.url} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="text-textMuted hover:text-text transition-colors p-1.5 rounded-lg hover:bg-surfaceHover"
+            title="Register / View Contest"
+          >
+            <ExternalLink className="w-4 h-4" />
+          </a>
+        </div>
       </div>
 
       <h3 className="text-lg font-bold mb-4 line-clamp-2 text-text group-hover:text-codeforces transition-colors" title={contest.name}>

@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import type { Contest } from '../types';
 import { intervalToDuration, isPast, type Duration } from 'date-fns';
-import { Timer } from 'lucide-react';
+import { Timer, ExternalLink } from 'lucide-react';
 import { cn } from '../lib/utils';
+import { AddToCalendarMenu } from './AddToCalendarMenu';
 
 interface CountdownWidgetProps {
   contest: Contest | null;
@@ -103,15 +104,18 @@ export const CountdownWidget: React.FC<CountdownWidgetProps> = ({ contest, loadi
         <TimeBox value={timeLeft.seconds} label="Seconds" />
       </div>
 
-      <div className="mt-8 z-10">
+      <div className="mt-8 z-10 flex flex-wrap items-center justify-center gap-3">
         <a 
           href={contest.url}
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl font-medium bg-codeforces text-white hover:opacity-90 shadow-md hover:shadow-lg transition-all"
         >
-          Register / View Contest
+          <span>Register / View Contest</span>
+          <ExternalLink className="w-4 h-4" />
         </a>
+
+        <AddToCalendarMenu contest={contest} variant="button" />
       </div>
     </div>
   );
