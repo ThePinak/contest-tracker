@@ -1,16 +1,23 @@
 import { useEffect, useState } from 'react';
 import type { Contest } from '../types';
 import { intervalToDuration, isPast, type Duration } from 'date-fns';
-import { Timer, ExternalLink } from 'lucide-react';
+import { Timer, ExternalLink, Star } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { AddToCalendarMenu } from './AddToCalendarMenu';
 
 interface CountdownWidgetProps {
   contest: Contest | null;
   loading: boolean;
+  isBookmarked: boolean;
+  onToggleBookmark: (id: string) => void;
 }
 
-export const CountdownWidget: React.FC<CountdownWidgetProps> = ({ contest, loading }) => {
+export const CountdownWidget: React.FC<CountdownWidgetProps> = ({ 
+  contest, 
+  loading, 
+  isBookmarked, 
+  onToggleBookmark 
+}) => {
   const [timeLeft, setTimeLeft] = useState<Duration | null>(null);
 
   useEffect(() => {
@@ -116,6 +123,20 @@ export const CountdownWidget: React.FC<CountdownWidgetProps> = ({ contest, loadi
         </a>
 
         <AddToCalendarMenu contest={contest} variant="button" />
+
+        <button
+          type="button"
+          onClick={() => onToggleBookmark(contest.id)}
+          className={cn(
+            "inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium text-sm border shadow-sm transition-all cursor-pointer",
+            isBookmarked
+              ? "bg-amber-500/10 border-amber-500/30 text-amber-500 hover:bg-amber-500/20"
+              : "bg-surface hover:bg-surfaceHover border-borderMuted text-text"
+          )}
+        >
+          <Star className={cn("w-4 h-4", isBookmarked && "fill-amber-500 text-amber-500")} />
+          <span>{isBookmarked ? 'Starred' : 'Star Contest'}</span>
+        </button>
       </div>
     </div>
   );

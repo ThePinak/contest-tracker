@@ -1,11 +1,13 @@
 import { format, formatDuration, intervalToDuration } from 'date-fns';
-import { ExternalLink, Clock, Calendar } from 'lucide-react';
+import { ExternalLink, Clock, Calendar, Star } from 'lucide-react';
 import type { Contest } from '../types';
 import { cn } from '../lib/utils';
 import { AddToCalendarMenu } from './AddToCalendarMenu';
 
 interface ContestCardProps {
   contest: Contest;
+  isBookmarked: boolean;
+  onToggleBookmark: (id: string) => void;
 }
 
 const platformConfig = {
@@ -32,7 +34,7 @@ const platformConfig = {
   },
 };
 
-export const ContestCard: React.FC<ContestCardProps> = ({ contest }) => {
+export const ContestCard: React.FC<ContestCardProps> = ({ contest, isBookmarked, onToggleBookmark }) => {
   const config = platformConfig[contest.platform];
   const startDate = new Date(contest.startTime);
   
@@ -56,8 +58,27 @@ export const ContestCard: React.FC<ContestCardProps> = ({ contest }) => {
         )}>
           {config.label}
         </span>
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-1">
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggleBookmark(contest.id);
+            }}
+            className={cn(
+              "p-1.5 rounded-lg transition-all duration-200 cursor-pointer border border-transparent hover:border-borderMuted",
+              isBookmarked
+                ? "text-amber-500 bg-amber-500/10 hover:bg-amber-500/20"
+                : "text-textMuted hover:text-amber-500 hover:bg-surfaceHover"
+            )}
+            title={isBookmarked ? "Remove from starred" : "Star contest"}
+            aria-label={isBookmarked ? "Remove from starred" : "Star contest"}
+          >
+            <Star className={cn("w-4 h-4 transition-transform", isBookmarked && "fill-amber-500 scale-110")} />
+          </button>
+          
           <AddToCalendarMenu contest={contest} variant="compact" />
+          
           <a 
             href={contest.url} 
             target="_blank" 

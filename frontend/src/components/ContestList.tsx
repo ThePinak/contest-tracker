@@ -1,13 +1,24 @@
 import type { Contest } from '../types';
 import { ContestCard } from './ContestCard';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, Star } from 'lucide-react';
 
 interface ContestListProps {
   contests: Contest[];
   loading: boolean;
+  bookmarkedIds: string[];
+  onToggleBookmark: (id: string) => void;
+  activeTab?: 'all' | 'starred';
+  onExploreAll?: () => void;
 }
 
-export const ContestList: React.FC<ContestListProps> = ({ contests, loading }) => {
+export const ContestList: React.FC<ContestListProps> = ({ 
+  contests, 
+  loading,
+  bookmarkedIds,
+  onToggleBookmark,
+  activeTab = 'all',
+  onExploreAll,
+}) => {
   if (loading) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -29,6 +40,28 @@ export const ContestList: React.FC<ContestListProps> = ({ contests, loading }) =
   }
 
   if (contests.length === 0) {
+    if (activeTab === 'starred') {
+      return (
+        <div className="glass rounded-2xl p-12 flex flex-col items-center justify-center text-center border-borderMuted">
+          <div className="w-16 h-16 bg-amber-500/10 rounded-full flex items-center justify-center mb-4">
+            <Star className="w-8 h-8 text-amber-500" />
+          </div>
+          <h3 className="text-xl font-bold mb-2 text-text">No starred contests yet</h3>
+          <p className="text-textMuted max-w-md text-sm mb-6">
+            Click the star icon on any contest card or the countdown widget above to save it to your personal watchlist!
+          </p>
+          {onExploreAll && (
+            <button
+              onClick={onExploreAll}
+              className="px-5 py-2 rounded-xl bg-surface hover:bg-surfaceHover border border-borderMuted text-text text-sm font-medium transition-all shadow-sm cursor-pointer"
+            >
+              Browse All Contests
+            </button>
+          )}
+        </div>
+      );
+    }
+
     return (
       <div className="glass rounded-2xl p-12 flex flex-col items-center justify-center text-center border-borderMuted">
         <div className="w-16 h-16 bg-surfaceHover rounded-full flex items-center justify-center mb-4">
@@ -44,8 +77,13 @@ export const ContestList: React.FC<ContestListProps> = ({ contests, loading }) =
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {contests.map(contest => (
-        <ContestCard key={contest.id} contest={contest} />
+      {contests.map((contest) => (
+        <ContestCard 
+          key={contest.id} 
+          contest={contest} 
+          isBookmarked={bookmarkedIds.includes(contest.id)}
+          onToggleBookmark={onToggleBookmark}
+        />
       ))}
     </div>
   );

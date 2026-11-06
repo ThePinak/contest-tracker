@@ -5,6 +5,7 @@ import type { Contest, Platform } from './types';
 import { CountdownWidget } from './components/CountdownWidget';
 import { SearchFilterBar } from './components/SearchFilterBar';
 import { ContestList } from './components/ContestList';
+import { useBookmarks } from './lib/useBookmarks';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
 
@@ -13,6 +14,12 @@ function App() {
   const [nextContest, setNextContest] = useState<Contest | null>(null);
   const [loading, setLoading] = useState(true);
   const [nextLoading, setNextLoading] = useState(true);
+
+  // Tab state: 'all' or 'starred'
+  const [activeTab, setActiveTab] = useState<'all' | 'starred'>('all');
+
+  // Bookmarks hook
+  const { bookmarkedIds, toggleBookmark, isBookmarked, bookmarkedCount } = useBookmarks();
 
   // Theme state: defaults to 'light', stored in localStorage
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
@@ -79,6 +86,10 @@ function App() {
     fetchContests();
   }, [filters]);
 
+  const displayedContests = activeTab === 'starred'
+    ? contests.filter(c => bookmarkedIds.includes(c.id))
+    : contests;
+
   return (
     <div className="min-h-screen relative overflow-hidden bg-background text-text transition-colors duration-300">
       {/* Dynamic background glow */}
@@ -122,11 +133,29 @@ function App() {
         </header>
 
         <main>
-          <CountdownWidget contest={nextContest} loading={nextLoading} />
+          <CountdownWidget 
+            contest={nextContest} 
+            loading={nextLoading} 
+            isBookmarked={nextContest ? isBookmarked(nextContest.id) : false}
+            onToggleBookmark={toggleBookmark}
+          />
           
-          <SearchFilterBar onFilterChange={setFilters} />
+          <SearchFilterBar 
+            onFilterChange={setFilters} 
+            activeTab={activeTab}
+            onTabChange={setActiveTab}
+            starredCount={bookmarkedCount}
+            totalCount={contests.length}
+          />
           
-          <ContestList contests={contests} loading={loading} />
+          <ContestList 
+            contests={displayedContests} 
+            loading={loading} 
+            bookmarkedIds={bookmarkedIds}
+            onToggleBookmark={toggleBookmark}
+            activeTab={activeTab}
+            onExploreAll={() => setActiveTab('all')}
+          />
         </main>
       </div>
     </div>
