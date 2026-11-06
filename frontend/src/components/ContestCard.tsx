@@ -46,7 +46,7 @@ export const ContestCard: React.FC<ContestCardProps> = ({ contest, isBookmarked,
   return (
     <div className={cn(
       "group relative glass rounded-xl p-6 transition-all duration-300 ease-out",
-      "hover:scale-[1.01] border border-borderMuted",
+      "hover:scale-[1.01] border border-borderMuted hover:z-20",
       config.glowClass
     )}>
       <div className="flex justify-between items-start mb-4">

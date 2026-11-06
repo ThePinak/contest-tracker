@@ -79,15 +79,17 @@ export const CountdownWidget: React.FC<CountdownWidgetProps> = ({
   );
 
   return (
-    <div className="glass rounded-2xl p-6 sm:p-10 mb-8 flex flex-col items-center relative overflow-hidden transition-all duration-300">
-      {/* Decorative background blob */}
-      <div className={cn("absolute -top-24 -right-24 w-64 h-64 rounded-full blur-3xl opacity-15 dark:opacity-10", {
-        'bg-codeforces': contest.platform === 'CODEFORCES',
-        'bg-leetcode': contest.platform === 'LEETCODE',
-        'bg-codechef': contest.platform === 'CODECHEF',
-      })}></div>
+    <div className="glass rounded-2xl p-6 sm:p-10 mb-8 flex flex-col items-center relative transition-all duration-300">
+      {/* Decorative background blob contained inside */}
+      <div className="absolute inset-0 overflow-hidden rounded-2xl pointer-events-none">
+        <div className={cn("absolute -top-24 -right-24 w-64 h-64 rounded-full blur-3xl opacity-15 dark:opacity-10", {
+          'bg-codeforces': contest.platform === 'CODEFORCES',
+          'bg-leetcode': contest.platform === 'LEETCODE',
+          'bg-codechef': contest.platform === 'CODECHEF',
+        })}></div>
+      </div>
 
-      <div className="flex items-center gap-2 mb-2">
+      <div className="flex items-center gap-2 mb-2 z-10">
         <Timer className={cn("w-5 h-5", accentColor)} />
         <h2 className="text-sm font-semibold tracking-wide uppercase text-textMuted">Next Upcoming Contest</h2>
       </div>
@@ -111,12 +113,12 @@ export const CountdownWidget: React.FC<CountdownWidgetProps> = ({
         <TimeBox value={timeLeft.seconds} label="Seconds" />
       </div>
 
-      <div className="mt-8 z-10 flex flex-wrap items-center justify-center gap-3">
+      <div className="mt-8 z-20 flex flex-wrap items-center justify-center gap-3">
         <a 
           href={contest.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl font-medium bg-codeforces text-white hover:opacity-90 shadow-md hover:shadow-lg transition-all"
+          className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl font-medium bg-codeforces text-white hover:opacity-90 shadow-md hover:shadow-lg transition-all cursor-pointer"
         >
           <span>Register / View Contest</span>
           <ExternalLink className="w-4 h-4" />
