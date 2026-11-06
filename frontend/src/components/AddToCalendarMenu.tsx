@@ -84,8 +84,10 @@ export const AddToCalendarMenu: React.FC<AddToCalendarMenuProps> = ({ contest, v
       {isOpen && (
         <div 
           className={cn(
-            "absolute mt-2 w-56 rounded-xl bg-surface border border-borderMuted shadow-2xl py-1.5 z-50 animate-in fade-in zoom-in-95 duration-150 ring-1 ring-black/5 dark:ring-white/10",
-            variant === 'compact' ? "right-0 top-full" : "left-0 sm:left-auto sm:right-0 top-full"
+            "absolute w-56 rounded-xl bg-surface border border-borderMuted shadow-2xl py-1.5 z-50 animate-in fade-in zoom-in-95 duration-150 ring-1 ring-black/5 dark:ring-white/10",
+            variant === 'button'
+              ? "bottom-full mb-2 left-1/2 -translate-x-1/2 sm:translate-x-0 sm:left-auto sm:right-0" 
+              : "top-full mt-1.5 right-0"
           )}
           role="menu"
         >

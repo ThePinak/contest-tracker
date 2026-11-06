@@ -5,6 +5,7 @@ import express from 'express';
 import cors from 'cors';
 import { prisma } from './db.js';
 import { startCron, syncContests } from './jobs/sync.js';
+import { fetchUserProfile } from './fetchers/profile.js';
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -15,6 +16,21 @@ app.use(express.json());
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', time: new Date() });
+});
+
+// Analyze user competitive programming profile across platforms
+app.get('/api/user/profile', async (req, res) => {
+  try {
+    const { cf, lc, cc } = req.query;
+    if (!cf && !lc && !cc) {
+      return res.status(400).json({ error: 'Please provide at least one handle (cf, lc, or cc)' });
+    }
+    const profile = await fetchUserProfile({ cf, lc, cc });
+    res.json(profile);
+  } catch (error) {
+    console.error('[API] Error fetching user profile:', error);
+    res.status(500).json({ error: 'Failed to fetch user profile' });
+  }
 });
 
 // Get all upcoming contests with filtering
@@ -96,4 +112,3 @@ app.listen(port, () => {
   // Run an initial sync on startup
   syncContests();
 });
-

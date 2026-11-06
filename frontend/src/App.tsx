@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Trophy, Sun, Moon } from 'lucide-react';
+import { Trophy, Sun, Moon, CalendarDays, UserCheck } from 'lucide-react';
 import type { Contest, Platform } from './types';
 import { CountdownWidget } from './components/CountdownWidget';
 import { SearchFilterBar } from './components/SearchFilterBar';
 import { ContestList } from './components/ContestList';
+import { ProfileAnalyzer } from './components/ProfileAnalyzer';
 import { useBookmarks } from './lib/useBookmarks';
+import { cn } from './lib/utils';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
 
@@ -15,7 +17,10 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [nextLoading, setNextLoading] = useState(true);
 
-  // Tab state: 'all' or 'starred'
+  // Main Page Navigation: 'contests' or 'profile'
+  const [mainView, setMainView] = useState<'contests' | 'profile'>('contests');
+
+  // Filter Sub-tab state: 'all' or 'starred'
   const [activeTab, setActiveTab] = useState<'all' | 'starred'>('all');
 
   // Bookmarks hook
@@ -100,62 +105,101 @@ function App() {
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-        <header className="flex items-center justify-between mb-10">
+        <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-10">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-xl bg-surface border border-borderMuted shadow-sm flex items-center justify-center">
               <Trophy className="w-6 h-6 text-amber-500" />
             </div>
             <div>
               <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-text">Contest Tracker</h1>
-              <p className="text-textMuted text-sm sm:text-base">Your upcoming competitive programming journey</p>
+              <p className="text-textMuted text-sm sm:text-base">Your competitive programming journey</p>
             </div>
           </div>
 
-          {/* Theme Toggle Button */}
-          <button
-            onClick={toggleTheme}
-            aria-label="Toggle Theme"
-            className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-surface border border-borderMuted shadow-sm hover:bg-surfaceHover text-text transition-all duration-200 cursor-pointer"
-            title={`Switch to ${theme === 'light' ? 'Dark' : 'Light'} Mode`}
-          >
-            {theme === 'light' ? (
-              <>
-                <Moon className="w-4 h-4 text-slate-700" />
-                <span className="text-sm font-medium hidden sm:inline text-slate-700">Dark</span>
-              </>
-            ) : (
-              <>
-                <Sun className="w-4 h-4 text-amber-400" />
-                <span className="text-sm font-medium hidden sm:inline text-amber-200">Light</span>
-              </>
-            )}
-          </button>
+          <div className="flex items-center flex-wrap gap-3">
+            {/* Main Tabs Navigation */}
+            <nav className="flex items-center p-1 bg-surface rounded-xl border border-borderMuted shadow-sm">
+              <button
+                type="button"
+                onClick={() => setMainView('contests')}
+                className={cn(
+                  "flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-sm font-semibold transition-all cursor-pointer",
+                  mainView === 'contests'
+                    ? "bg-codeforces text-white shadow-sm"
+                    : "text-textMuted hover:text-text hover:bg-surfaceHover"
+                )}
+              >
+                <CalendarDays className="w-4 h-4" />
+                <span>Contests</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setMainView('profile')}
+                className={cn(
+                  "flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-sm font-semibold transition-all cursor-pointer",
+                  mainView === 'profile'
+                    ? "bg-codeforces text-white shadow-sm"
+                    : "text-textMuted hover:text-text hover:bg-surfaceHover"
+                )}
+              >
+                <UserCheck className="w-4 h-4" />
+                <span>Analyze My Profile</span>
+              </button>
+            </nav>
+
+            {/* Theme Toggle Button */}
+            <button
+              onClick={toggleTheme}
+              aria-label="Toggle Theme"
+              className="flex items-center gap-2 px-3 py-2 rounded-xl bg-surface border border-borderMuted shadow-sm hover:bg-surfaceHover text-text transition-all duration-200 cursor-pointer"
+              title={`Switch to ${theme === 'light' ? 'Dark' : 'Light'} Mode`}
+            >
+              {theme === 'light' ? (
+                <>
+                  <Moon className="w-4 h-4 text-slate-700" />
+                  <span className="text-sm font-medium hidden md:inline text-slate-700">Dark</span>
+                </>
+              ) : (
+                <>
+                  <Sun className="w-4 h-4 text-amber-400" />
+                  <span className="text-sm font-medium hidden md:inline text-amber-200">Light</span>
+                </>
+              )}
+            </button>
+          </div>
         </header>
 
         <main>
-          <CountdownWidget 
-            contest={nextContest} 
-            loading={nextLoading} 
-            isBookmarked={nextContest ? isBookmarked(nextContest.id) : false}
-            onToggleBookmark={toggleBookmark}
-          />
-          
-          <SearchFilterBar 
-            onFilterChange={setFilters} 
-            activeTab={activeTab}
-            onTabChange={setActiveTab}
-            starredCount={bookmarkedCount}
-            totalCount={contests.length}
-          />
-          
-          <ContestList 
-            contests={displayedContests} 
-            loading={loading} 
-            bookmarkedIds={bookmarkedIds}
-            onToggleBookmark={toggleBookmark}
-            activeTab={activeTab}
-            onExploreAll={() => setActiveTab('all')}
-          />
+          {mainView === 'contests' ? (
+            <>
+              <CountdownWidget 
+                contest={nextContest} 
+                loading={nextLoading} 
+                isBookmarked={nextContest ? isBookmarked(nextContest.id) : false}
+                onToggleBookmark={toggleBookmark}
+              />
+              
+              <SearchFilterBar 
+                onFilterChange={setFilters} 
+                activeTab={activeTab}
+                onTabChange={setActiveTab}
+                starredCount={bookmarkedCount}
+                totalCount={contests.length}
+              />
+              
+              <ContestList 
+                contests={displayedContests} 
+                loading={loading} 
+                bookmarkedIds={bookmarkedIds}
+                onToggleBookmark={toggleBookmark}
+                activeTab={activeTab}
+                onExploreAll={() => setActiveTab('all')}
+              />
+            </>
+          ) : (
+            <ProfileAnalyzer />
+          )}
         </main>
       </div>
     </div>
